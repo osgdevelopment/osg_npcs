@@ -1,4 +1,4 @@
-# RexshackGaming
+# OSG Development
 - discord : https://discord.gg/zgu3DJvxPc 
 - youtube : https://www.youtube.com/@osgdevelopment
 - github : https://github.com/osgdevelopment
