@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
--- version checker
+-- version checker (single file for all resources)
 -----------------------------------------------------------------------
 local function versionCheckPrint(_type, log)
     local color = _type == 'success' and '^2' or '^1'
@@ -9,7 +9,7 @@ end
 local function CheckVersion()
     local resource = GetCurrentResourceName()
     local currentVersion = GetResourceMetadata(resource, 'version', 0)
-    local githubURL = 'https://raw.githubusercontent.com/osgdevelopment/osg-versioncheckers/main/'..resource..'/version.txt?t=' .. os.time()
+    local githubURL = 'https://raw.githubusercontent.com/osgdevelopment/osg_npcs/refs/heads/main/version.txt?t=' .. os.time()
 
     PerformHttpRequest(githubURL, function(err, text, headers)
         if err ~= 200 or not text then
@@ -17,13 +17,20 @@ local function CheckVersion()
             return
         end
 
-        -- split into lines
-        local lines = {}
+        -- parse lines
+        local latestVersion
         for line in text:gmatch("[^\r\n]+") do
-            table.insert(lines, line)
+            local name, ver = line:match("([^:]+):([^:]+)")
+            if name and ver and name == resource then
+                latestVersion = ver:match("^%s*(.-)%s*$") -- trim
+                break
+            end
         end
 
-        local latestVersion = lines[1] or "unknown"
+        if not latestVersion then
+            versionCheckPrint('error', 'No version entry found for this resource in version.txt.')
+            return
+        end
 
         versionCheckPrint('success', ('Current Version: %s'):format(currentVersion))
         versionCheckPrint('success', ('Latest Version: %s'):format(latestVersion))
@@ -32,14 +39,6 @@ local function CheckVersion()
             versionCheckPrint('success', 'You are running the latest version.')
         else
             versionCheckPrint('error', ('You are currently running an outdated version, please update to version %s'):format(latestVersion))
-        end
-
-        -- optional: print changelog
-        if #lines > 1 then
-            print("^5[Changelog]^7")
-            for i = 2, #lines do
-                print("^3 - " .. lines[i] .. "^7")
-            end
         end
     end, "GET", "")
 end
