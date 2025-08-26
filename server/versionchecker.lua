@@ -8,11 +8,17 @@ local function CheckVersion()
     local currentVersion = GetResourceMetadata(resource, 'version', 0)
     local githubURL = 'https://raw.githubusercontent.com/osgdevelopment/osg_npcs/refs/heads/main/version.txt?t=' .. os.time()
 
-    PerformHttpRequest(githubURL, function(err, text, headers)
-        if err ~= 200 or not text then
-            versionCheckPrint('error', 'Currently unable to run a version check.')
-            return
-        end
+PerformHttpRequest(githubURL, function(err, text, headers)
+    if err ~= 200 then
+        versionCheckPrint('error', ('HTTP Error: %d - Cannot reach version file.'):format(err))
+        print(('^1[Debug] Response: %s^7'):format(text or 'nil'))
+        return
+    end
+
+    if not text or text == '' then
+        versionCheckPrint('error', 'Empty or invalid response from server.')
+        return
+    end
 
         -- parse version line for this resource
         local latestVersion
