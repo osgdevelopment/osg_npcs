@@ -9,8 +9,7 @@ end
 local function CheckVersion()
     local resource = GetCurrentResourceName()
     local currentVersion = GetResourceMetadata(resource, 'version', 0)
-    -- cache-busting param so GitHub doesn't serve old content
-    local githubURL = 'https://raw.githubusercontent.com/osgdevelopment/osg_npcs/refs/heads/main/version?t=' .. os.time()
+    local githubURL = 'https://raw.githubusercontent.com/osgdevelopment/osg-versioncheckers/main/'..resource..'/version.txt?t=' .. os.time()
 
     PerformHttpRequest(githubURL, function(err, text, headers)
         if err ~= 200 or not text then
@@ -18,9 +17,13 @@ local function CheckVersion()
             return
         end
 
-        -- get only the first line, trim whitespace
-        local latestVersion = text:match("([^\r\n]+)") or text
-        latestVersion = latestVersion:match("^%s*(.-)%s*$")
+        -- split into lines
+        local lines = {}
+        for line in text:gmatch("[^\r\n]+") do
+            table.insert(lines, line)
+        end
+
+        local latestVersion = lines[1] or "unknown"
 
         versionCheckPrint('success', ('Current Version: %s'):format(currentVersion))
         versionCheckPrint('success', ('Latest Version: %s'):format(latestVersion))
@@ -30,12 +33,18 @@ local function CheckVersion()
         else
             versionCheckPrint('error', ('You are currently running an outdated version, please update to version %s'):format(latestVersion))
         end
+
+        -- optional: print changelog
+        if #lines > 1 then
+            print("^5[Changelog]^7")
+            for i = 2, #lines do
+                print("^3 - " .. lines[i] .. "^7")
+            end
+        end
     end, "GET", "")
 end
 
 -----------------------------------------------------------------------
 -- start version check
 -----------------------------------------------------------------------
-
 CheckVersion()
-
