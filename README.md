@@ -18,3 +18,6 @@
 - This is a VORP Core compatible fork of the original rsg-npcs.(https://github.com/Rexshack-RedM/rsg-npcs)
 - Add your NPCs in `config.lua` under `Config.PedList`.
 - Requires `xsound` https://github.com/Xogy/xsound
+
+**UPDATES**
+- add time options when NPC Spawns
