@@ -17,16 +17,16 @@ local function CheckVersion()
             return
         end
 
-        -- trim whitespace/newline from GitHub file
-        text = text:match("^%s*(.-)%s*$")
+        -- get only the first line (the actual version number)
+        local latestVersion = text:match("([^\r\n]+)")
 
         versionCheckPrint('success', ('Current Version: %s'):format(currentVersion))
-        versionCheckPrint('success', ('Latest Version: %s'):format(text))
+        versionCheckPrint('success', ('Latest Version: %s'):format(latestVersion))
 
-        if text == currentVersion then
+        if latestVersion == currentVersion then
             versionCheckPrint('success', 'You are running the latest version.')
         else
-            versionCheckPrint('error', ('You are currently running an outdated version, please update to version %s'):format(text))
+            versionCheckPrint('error', ('You are currently running an outdated version, please update to version %s'):format(latestVersion))
         end
     end, "GET", "")
 end
