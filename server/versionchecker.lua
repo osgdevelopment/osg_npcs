@@ -21,14 +21,14 @@ PerformHttpRequest(githubURL, function(err, text, headers)
     end
 
         -- parse version line for this resource
-        local latestVersion
-        for line in text:gmatch("[^\r\n]+") do
-            local name, ver = line:match("([^:]+):([^:]+)")
-            if name and ver and name == resource then
-                latestVersion = ver:match("^%s*(.-)%s*$") -- trim spaces
-                break
-            end
-        end
+local latestVersion = nil
+for line in text:gmatch("[^\r\n]+") do
+    local name, ver = line:match("([^:]+):([^:]+)")
+    if name and ver and name == resource then
+        latestVersion = ver:match("^%s*(.-)%s*$")  -- update, but don't break
+        -- keep going in case there's a newer one below
+    end
+end
 
         if not latestVersion then
             versionCheckPrint('error', 'No version entry found for this resource in version.txt.')
