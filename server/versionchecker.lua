@@ -8,13 +8,17 @@ local function versionCheckPrint(_type, log)
 end
 
 local function CheckVersion()
-    PerformHttpRequest('https://raw.githubusercontent.com/osgdevelopment/osg_npcs/osg-versioncheckers/main/'..GetCurrentResourceName()..'/version.txt', function(err, text, headers)
-        local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version')
+    local resource = GetCurrentResourceName()
+    local currentVersion = GetResourceMetadata(resource, 'version', 0)
+    local githubURL = 'https://raw.githubusercontent.com/osgdevelopment/osg_npcs/osg-versioncheckers/version.txt'
 
-        if not text then
+    PerformHttpRequest(githubURL, function(err, text, headers)
+        if err ~= 200 or not text then
             versionCheckPrint('error', 'Currently unable to run a version check.')
             return
         end
+
+        text = text:match("^%s*(.-)%s*$") -- trim whitespace/newlines
 
         versionCheckPrint('success', ('Current Version: %s'):format(currentVersion))
         versionCheckPrint('success', ('Latest Version: %s'):format(text))
@@ -24,10 +28,10 @@ local function CheckVersion()
         else
             versionCheckPrint('error', ('You are currently running an outdated version, please update to version %s'):format(text))
         end
-    end)
+    end, "GET", "")
 end
 
---------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------
 -- start version check
---------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------
 CheckVersion()
