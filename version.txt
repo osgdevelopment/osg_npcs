@@ -1,2 +1,6 @@
 osg_npcs:2.0
 - This is a VORP Core compatible fork of the original rsg-npcs.(https://github.com/Rexshack-RedM/rsg-npcs)
+osg_npcs:2.1
+- Added time-based NPC spawning (startTime / endTime)
+- Blips now hide outside open hours
+- Improved audio handling with xsound
