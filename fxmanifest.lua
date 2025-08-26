@@ -30,3 +30,4 @@ dependencies {
 }
 
 lua54 'yes'
+version '2.0'
