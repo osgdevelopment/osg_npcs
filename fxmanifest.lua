@@ -3,7 +3,7 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 game 'rdr3'
 
 description 'VORP-compatible NPC spawner (fork of rsg-npcs)'
-version '2.1'
+version '2.0'
 
 shared_scripts {
     'config.lua'
