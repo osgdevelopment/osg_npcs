@@ -1,6 +1,3 @@
------------------------------------------------------------------------
--- version checker (single file for all resources)
------------------------------------------------------------------------
 local function versionCheckPrint(_type, log)
     local color = _type == 'success' and '^2' or '^1'
     print(('^5['..GetCurrentResourceName()..']%s %s^7'):format(color, log))
@@ -17,12 +14,12 @@ local function CheckVersion()
             return
         end
 
-        -- parse lines
+        -- parse version line for this resource
         local latestVersion
         for line in text:gmatch("[^\r\n]+") do
             local name, ver = line:match("([^:]+):([^:]+)")
             if name and ver and name == resource then
-                latestVersion = ver:match("^%s*(.-)%s*$") -- trim
+                latestVersion = ver:match("^%s*(.-)%s*$") -- trim spaces
                 break
             end
         end
@@ -43,7 +40,4 @@ local function CheckVersion()
     end, "GET", "")
 end
 
------------------------------------------------------------------------
--- start version check
------------------------------------------------------------------------
 CheckVersion()
