@@ -9,7 +9,7 @@ end
 local function CheckVersion()
     local resource = GetCurrentResourceName()
     local currentVersion = GetResourceMetadata(resource, 'version', 0)
-    local githubURL = 'https://raw.githubusercontent.com/osgdevelopment/osg_npcs/osg-versioncheckers/version.txt'
+    local githubURL = 'https://raw.githubusercontent.com/osgdevelopment/osg_npcs/refs/heads/main/version'
 
     PerformHttpRequest(githubURL, function(err, text, headers)
         if err ~= 200 or not text then
@@ -17,7 +17,8 @@ local function CheckVersion()
             return
         end
 
-        text = text:match("^%s*(.-)%s*$") -- trim whitespace/newlines
+        -- trim whitespace/newline from GitHub file
+        text = text:match("^%s*(.-)%s*$")
 
         versionCheckPrint('success', ('Current Version: %s'):format(currentVersion))
         versionCheckPrint('success', ('Latest Version: %s'):format(text))
